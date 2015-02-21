@@ -1,7 +1,7 @@
 var clickclock=function(){};
 clickclock.prototype.clock_circle=undefined;
 clickclock.prototype.clock_circle_seconds=undefined;
-clickclock.prototype.clock_radius=100;
+clickclock.prototype.clock_radius=200;
 clickclock.prototype.clock_stroke_width=clickclock.prototype.clock_radius*0.30;
 clickclock.prototype.clock_stroke_seconds_width=clickclock.prototype.clock_radius*0.05;
 clickclock.prototype.total_degrees=360;
@@ -113,9 +113,10 @@ clickclock.prototype.updateDialCurrentSeconds=function(){
 clickclock.prototype.updateColorFlip=function()
 {
 
-	if(this.clock_seconds_count>354)
+	if(this.clock_seconds_count>=360)
 		{
-			this.clock_seconds_count=6;
+			
+			this.clock_seconds_count=0;
 			this.clock_seconds_flip=!this.clock_seconds_flip;
 		}
 
