@@ -175,7 +175,6 @@ clickclock.prototype.setSecondsDialColor=function(){
 
 var clockobj;
 
-
 window.onload = function() {
 					
 					clockobj=new clickclock();
