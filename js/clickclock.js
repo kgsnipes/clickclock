@@ -16,9 +16,11 @@ clickclock.prototype.time_label_font_color='#303030';
 clickclock.prototype.clock_circle_fill_color='#fee98f';
 clickclock.prototype.canvas=undefined;
 clickclock.prototype.is24HourWatch=false;
-clickclock.prototype.hour_minute_color='#a0a0a0';
+clickclock.prototype.hour_minute_color='#969696';
 clickclock.prototype.hour_minute_stroke_width=clickclock.prototype.clock_radius*0.10;
 clickclock.prototype.clock_circle_hoursMinutes=undefined;
+clickclock.prototype.date=new Date("October 13, 2014 11:40:00");
+clickclock.prototype.currentFrameTime=0;
 
 clickclock.prototype.init=function(ele){
 	self=this;
@@ -31,16 +33,31 @@ clickclock.prototype.init=function(ele){
 	this.setMainDial();
 	this.setTimeDisplay();
 	this.updateDialCurrentSecondsLapsed();
-	this.updateDialCurrentHoursMinutesLapsed();
-	this.clock_interval=setInterval(function(){self.updateColorFlip();self.updateDialCurrentSeconds();},1000);
+	//this.updateDialCurrentHoursMinutesLapsed();
+	this.clock_interval=setInterval(function(){self.date=new Date(self.date.getTime()+1000);self.updateColorFlip();self.updateDialCurrentSeconds();},1000);
+	paper.view.onFrame=function(event)
+	{
+		//self.updateFrame(parseInt(event.time));
+	};
 
 
 };
 
+clickclock.prototype.updateFrame=function(secondsSoFar)
+{
+	if(this.currentFrameTime!=secondsSoFar)
+	{
+		this.currentFrameTime=secondsSoFar;
+		self.date=new Date(self.date.getTime()+1000);
+		self.updateColorFlip();
+		self.updateDialCurrentSeconds();
+	}
+};
+
 clickclock.prototype.setCurrentTimeSeconds=function(){
 
-		d=new Date();
-		this.clock_seconds_count=d.getSeconds()*6;
+		
+		this.clock_seconds_count=this.date.getSeconds()*6;
 
 	};
 
@@ -64,8 +81,13 @@ clickclock.prototype.setMainDial=function(){
 
 clickclock.prototype.setTimeDisplay=function(){
 	self=this;
+	curtime=undefined;
+	if(this.time_label!=undefined)
+	{
+		curtime=this.time_label.content;
+	}
 	this.time_label=new PointText(new Point(this.clock_radius+(this.clock_radius*0.25)-(this.clock_radius*0.35),this.clock_radius+(this.clock_radius*0.55)));
-	this.time_label.content='Time';
+	this.time_label.content=(curtime!=undefined)?curtime:"";
 	this.time_label.fontFamily='Roboto';
 	if(this.is24HourWatch)
 		this.time_label.fontSize=this.clock_radius*0.30;
@@ -93,7 +115,7 @@ clickclock.prototype.changeTimeDisplay=function(){
 
 clickclock.prototype.updateTimeDisplay=function(){
 
-	d=new Date();
+	d=this.date;
 	
 	if(this.is24HourWatch)
 	{
@@ -110,7 +132,7 @@ clickclock.prototype.updateTimeDisplay=function(){
 
 clickclock.prototype.updateDialCurrentHoursMinutesLapsed=function(){
 
-	d=new Date();
+	d=this.date;
 	degreeHours=d.getHours()*15;
 	degreeMinutes=d.getMinutes()*6;
 	if(degreeHours<degreeMinutes)
@@ -124,7 +146,7 @@ clickclock.prototype.updateDialCurrentHoursMinutesLapsed=function(){
 		endDegree=degreeHours;
 	}
 
-
+	console.log(startDegree,endDegree);
 	while(startDegree!=endDegree)
 	{
 		updatedPoints=this.calculateHoursMinutesArc(startDegree);
@@ -138,16 +160,24 @@ clickclock.prototype.updateDialCurrentHoursMinutesLapsed=function(){
 
 
 clickclock.prototype.updateDialCurrentSecondsLapsed=function(){
-	d=new Date();
 	seconds_count=0;
 	updatedPoints=undefined;
-	while(seconds_count!=this.clock_seconds_count)
+	if(this.clock_seconds_count==0)
 	{
-		updatedPoints=this.calculateSecondsArc(seconds_count);
-		this.drawSecondsDialWithPoints(updatedPoints);
-		this.updateTimeDisplay(); 
-		seconds_count=seconds_count+6;
+		this.clock_seconds_count+=6;
+		updatedPoints=this.calculateSecondsArc(6);
 	}
+	else
+	{
+		while(seconds_count!=this.clock_seconds_count)
+		{
+			updatedPoints=this.calculateSecondsArc(seconds_count);
+			this.drawSecondsDialWithPoints(updatedPoints);
+			this.updateTimeDisplay(); 
+			seconds_count=seconds_count+6;
+		}
+	}
+	
 	this.from_point=updatedPoints.from_point;
 	this.through_point=updatedPoints.through_point;
 	this.to_point=updatedPoints.to_point;
@@ -176,12 +206,11 @@ clickclock.prototype.updateColorFlip=function()
 	if(this.clock_seconds_count>=360)
 		{
 			
-			this.clock_seconds_count=0;
+			this.clock_seconds_count=6;
 			this.clock_seconds_flip=!this.clock_seconds_flip;
-
 			this.setMainDial();
 			this.setTimeDisplay();
-			this.updateDialCurrentHoursMinutesLapsed();
+			//this.updateDialCurrentHoursMinutesLapsed();
 		}
 
 };
@@ -258,6 +287,8 @@ clickclock.prototype.setSecondsDialColor=function(){
 
 
 };
+
+
 
 
 
