@@ -17,10 +17,10 @@ clickclock.prototype.clock_circle_hours=undefined;
 clickclock.prototype.time_label=undefined;
 
 clickclock.prototype.clock_radius=200;
-clickclock.prototype.clock_stroke_width=clickclock.prototype.clock_radius*0.30;
-clickclock.prototype.clock_stroke_seconds_width=clickclock.prototype.clock_radius*0.30;
-clickclock.prototype.clock_stroke_hours_width=clickclock.prototype.clock_radius*0.70;
-clickclock.prototype.clock_stroke_minutes_width=clickclock.prototype.clock_radius+(clickclock.prototype.clock_radius*0.20);
+clickclock.prototype.clock_stroke_width=clickclock.prototype.clock_radius*0.20;
+clickclock.prototype.clock_stroke_seconds_width=clickclock.prototype.clock_radius*0.10;
+clickclock.prototype.clock_stroke_hours_width=clickclock.prototype.clock_radius*0.20;
+clickclock.prototype.clock_stroke_minutes_width=clickclock.prototype.clock_radius*0.30;
 clickclock.prototype.clock_frame_color='#888888';
 
 clickclock.prototype.clock_seconds_color='#89ff92';
@@ -229,7 +229,7 @@ clickclock.prototype.updateFrame=function(){
 clickclock.prototype.calculateSecondsArc=function(seconds)
 {
 
-	radian6=0.0174532925*6;
+	radian6=0.0174532925*10;
 	currentPoints={};
 	currentPoints.from_point=this.getXYForDegree(((-450+seconds)*0.0174532925)-radian6,(this.clock_radius+(this.clock_radius*0.20)));
 	currentPoints.through_point=this.getXYForDegree(((-450+seconds)*0.0174532925),(this.clock_radius+(this.clock_radius*0.20)));
@@ -242,7 +242,7 @@ clickclock.prototype.calculateSecondsArc=function(seconds)
 clickclock.prototype.calculateHoursArc=function(seconds)
 {
 
-	radian6=0.0174532925*6;
+	radian6=0.0174532925*4;
 	currentPoints={};
 	currentPoints.from_point=this.getXYForDegree(((-450+seconds)*0.0174532925)-radian6,(this.clock_radius-(this.clock_radius*0.30)));
 	currentPoints.through_point=this.getXYForDegree(((-450+seconds)*0.0174532925),(this.clock_radius-(this.clock_radius*0.30)));
@@ -254,11 +254,11 @@ clickclock.prototype.calculateHoursArc=function(seconds)
 clickclock.prototype.calculateMinutesArc=function(seconds)
 {
 
-	radian6=0.0174532925*6;
+	radian6=0.0174532925*2;
 	currentPoints={};
-	currentPoints.from_point=this.getXYForDegree(((-450+seconds)*0.0174532925)-radian6,(this.clock_radius-(this.clock_radius*0.20)));
-	currentPoints.through_point=this.getXYForDegree(((-450+seconds)*0.0174532925),(this.clock_radius-(this.clock_radius*0.20)));
-	currentPoints.to_point=this.getXYForDegree(((-450+seconds)*0.0174532925)+radian6,(this.clock_radius-(this.clock_radius*0.20)));
+	currentPoints.from_point=this.getXYForDegree(((-450+seconds)*0.0174532925)-radian6,(this.clock_radius-(this.clock_radius*0.30)));
+	currentPoints.through_point=this.getXYForDegree(((-450+seconds)*0.0174532925),(this.clock_radius-(this.clock_radius*0.30)));
+	currentPoints.to_point=this.getXYForDegree(((-450+seconds)*0.0174532925)+radian6,(this.clock_radius-(this.clock_radius*0.30)));
 	return currentPoints;
 		
 };
