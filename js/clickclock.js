@@ -7,7 +7,7 @@ clickclock.prototype.secondsDialLayer=undefined;
 clickclock.prototype.timeDisplayLayer=undefined;
 clickclock.prototype.hourDialLayer=undefined;
 clickclock.prototype.minuteDialLayer=undefined;
-
+clickclock.prototype.monthDisplayLayer=undefined;
 
 clickclock.prototype.currentTime=undefined;
 
@@ -15,6 +15,7 @@ clickclock.prototype.clock_circle=undefined;
 clickclock.prototype.clock_circle_seconds=undefined;
 clickclock.prototype.clock_circle_hours=undefined;
 clickclock.prototype.time_label=undefined;
+clickclock.prototype.date_label=undefined;
 
 clickclock.prototype.clock_radius=200;
 clickclock.prototype.clock_stroke_width=clickclock.prototype.clock_radius*0.20;
@@ -34,7 +35,7 @@ clickclock.prototype.is24HourWatch=false;
 
 clickclock.prototype.clock_seconds_flip=false;
 clickclock.prototype.seconds_count=1;
-
+clickclock.prototype.months=['Jan','Feb','Mar','Apr','May','Jun','July','Aug','Sep','Oct','Nov','Dec'];
 
 clickclock.prototype.init=function(ele,time){
 	self=this;
@@ -53,6 +54,8 @@ clickclock.prototype.init=function(ele,time){
 
 };
 
+
+
 clickclock.prototype.setCanvasDimensions=function(){
 	
 	this.canvas.width=(this.clock_radius+(this.clock_radius*0.50))*2;
@@ -65,6 +68,7 @@ clickclock.prototype.addComponentsToLayers=function(){
 	this.setMainDial();
 	this.setUpdatedSeconds();
 	this.setTimeDisplay();
+	this.setMonthInfo();
 	
 };
 
@@ -155,7 +159,7 @@ clickclock.prototype.setUpdatedMinutes=function(){
 clickclock.prototype.setTimeDisplay=function(){
 	self=this;
 	
-	this.time_label=new PointText(new Point(this.clock_radius+(this.clock_radius*0.25)-(this.clock_radius*0.35),this.clock_radius+(this.clock_radius*0.55)));
+	this.time_label=new PointText(new Point(this.clock_radius+(this.clock_radius*0.25)-(this.clock_radius*0.30),this.clock_radius+(this.clock_radius*0.55)));
 
 	this.updateTimeDisplay();
 
@@ -173,6 +177,48 @@ clickclock.prototype.setTimeDisplay=function(){
     	self.changeTimeDisplay();
 	}
 
+};
+
+clickclock.prototype.setMonthInfo=function(){
+	
+	
+	this.date_label=new PointText(new Point(this.clock_radius+(this.clock_radius*0.25),this.clock_radius+(this.clock_radius*1)));
+	this.date_label.fontFamily='Roboto';
+	this.date_label.fontSize=this.clock_radius*0.30;
+	this.date_label.fontWeight='bold';
+	this.date_label.fillColor='#8f8f8f';
+	this.monthDisplayLayer.addChild(this.date_label);
+	this.date_label.view.draw();
+
+	this.month_label=new PointText(new Point(this.clock_radius+(this.clock_radius*0.60),this.clock_radius+(this.clock_radius*0.86)));
+	this.month_label.fontFamily='Roboto';
+	this.month_label.fontSize=this.clock_radius*0.10;
+	this.month_label.fontWeight='bold';
+	this.month_label.fillColor='#8f8f8f';
+	this.monthDisplayLayer.addChild(this.month_label);
+	this.month_label.view.draw();
+
+	this.year_label=new PointText(new Point(this.clock_radius+(this.clock_radius*0.60),this.clock_radius+(this.clock_radius*1)));
+	this.year_label.fontFamily='Roboto';
+	this.year_label.fontSize=this.clock_radius*0.10;
+	this.year_label.fontWeight='bold';
+	this.year_label.fillColor='#8f8f8f';
+	this.monthDisplayLayer.addChild(this.year_label);
+	this.year_label.view.draw();
+
+	this.updateMonthInfo();
+	
+};
+
+
+
+
+clickclock.prototype.updateMonthInfo=function(){
+
+	this.date_label.content=new Date().getDate();
+	this.month_label.content=this.months[new Date().getMonth()];
+	this.year_label.content=new Date().getFullYear().toString();
+	
 };
 
 clickclock.prototype.changeTimeDisplay=function(){
@@ -196,6 +242,7 @@ clickclock.prototype.setupLayers=function()
 	this.hourDialLayer=new Layer();
 	this.minuteDialLayer=new Layer();
 	this.timeDisplayLayer=new Layer();
+	this.monthDisplayLayer=new Layer();
 
 };
 
@@ -220,8 +267,10 @@ clickclock.prototype.updateFrame=function(){
 		//this.secondsDialLayer.removeChildren(0,this.secondsDialLayer.children.length);
 		this.setSecondsDialColor();
 
-		
+		this.updateMonthInfo();
 	}
+
+	
 	
 };
 
@@ -244,9 +293,9 @@ clickclock.prototype.calculateHoursArc=function(seconds)
 
 	radian6=0.0174532925*4;
 	currentPoints={};
-	currentPoints.from_point=this.getXYForDegree(((-450+seconds)*0.0174532925)-radian6,(this.clock_radius-(this.clock_radius*0.30)));
-	currentPoints.through_point=this.getXYForDegree(((-450+seconds)*0.0174532925),(this.clock_radius-(this.clock_radius*0.30)));
-	currentPoints.to_point=this.getXYForDegree(((-450+seconds)*0.0174532925)+radian6,(this.clock_radius-(this.clock_radius*0.30)));
+	currentPoints.from_point=this.getXYForDegree(((-450+seconds)*0.0174532925)-radian6,(this.clock_radius-(this.clock_radius*0.25)));
+	currentPoints.through_point=this.getXYForDegree(((-450+seconds)*0.0174532925),(this.clock_radius-(this.clock_radius*0.25)));
+	currentPoints.to_point=this.getXYForDegree(((-450+seconds)*0.0174532925)+radian6,(this.clock_radius-(this.clock_radius*0.25)));
 	return currentPoints;
 		
 };
