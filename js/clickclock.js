@@ -8,14 +8,17 @@ clickclock.prototype.timeDisplayLayer=undefined;
 clickclock.prototype.hourDialLayer=undefined;
 clickclock.prototype.minuteDialLayer=undefined;
 clickclock.prototype.monthDisplayLayer=undefined;
+clickclock.prototype.openweather_api_key='378b2adcd3b1d3c2c4256c6c1c1d2677';
 
 clickclock.prototype.currentTime=undefined;
+clickclock.prototype.currentDay=undefined;
 
 clickclock.prototype.clock_circle=undefined;
 clickclock.prototype.clock_circle_seconds=undefined;
 clickclock.prototype.clock_circle_hours=undefined;
 clickclock.prototype.time_label=undefined;
 clickclock.prototype.date_label=undefined;
+clickclock.prototype.weather_label=undefined;
 
 clickclock.prototype.clock_radius=200;
 clickclock.prototype.clock_stroke_width=clickclock.prototype.clock_radius*0.20;
@@ -36,10 +39,13 @@ clickclock.prototype.is24HourWatch=false;
 clickclock.prototype.clock_seconds_flip=false;
 clickclock.prototype.seconds_count=1;
 clickclock.prototype.months=['Jan','Feb','Mar','Apr','May','Jun','July','Aug','Sep','Oct','Nov','Dec'];
+clickclock.prototype.currentTemperature=undefined;
+clickclock.prototype.currentTempUnit='C';
 
 clickclock.prototype.init=function(ele,time){
 	self=this;
 	this.currentTime=time;
+	this.currentDay=time;
 	paper.install(window);
 	paper.setup(ele);
 	this.canvas=document.getElementById(ele);
@@ -63,12 +69,119 @@ clickclock.prototype.setCanvasDimensions=function(){
 	
 };
 
+clickclock.prototype.updateWeatherInformation=function(){
+	
+	this.getGeoLocationFromBrowser();
+};
+
+clickclock.prototype.getGeoLocationFromBrowser=function(){
+	self=this;
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(position)
+{
+   
+   
+   	self.getWeatherInformation(position.coords.latitude,position.coords.longitude);
+  
+	
+}, function(){});
+	} 
+	
+};
+
+
+clickclock.prototype.setUpdatedWeather=function(weather)
+{
+   
+   if(weather!=undefined && weather.main!=undefined && weather.main.temp!=undefined)
+   {
+   	  this.currentTemperature=weather.main.temp.toFixed(2);
+   	  this.weather_label.content='Today : '+this.currentTemperature.toString()+' '+this.getCurrentTempUnit();
+  	  this.weather_label.view.draw();
+   }
+  
+	
+};
+
+clickclock.prototype.getCurrentTempUnit=function()
+{
+	return this.currentTempUnit;
+};
+
+clickclock.prototype.getWeatherInformation=function(latitude,longitude)
+{
+	self=this;
+	if(window.jQuery)
+	{
+		
+				$.ajax({
+		    url: "http://api.openweathermap.org/data/2.5/weather",
+		 
+		    // The name of the callback parameter, as specified by the YQL service
+		    jsonp: "callback",
+		 
+		    // Tell jQuery we're expecting JSONP
+		    dataType: "jsonp",
+		 
+		    // Tell YQL what we want and that we want JSON
+		    data: {
+		       APPID:self.openweather_api_key, 
+		       lat:latitude.toString(),
+		       lon:longitude.toString(),
+		       units:'metric'
+		    },
+		 
+		    // Work with the response
+		    success: function( response ) {
+		    	self.setUpdatedWeather(response);
+		        
+		    }
+		});
+	}
+  	
+};
+
+clickclock.prototype.setWeatherLabel=function(){
+		self=this;
+		this.weather_label=new PointText(new Point(this.clock_radius+(this.clock_radius*0.15),this.clock_radius+(this.clock_radius*0.15)));
+		this.weather_label.fontFamily='Roboto';
+		this.weather_label.fontSize=this.clock_radius*0.10;
+		this.weather_label.fontWeight='bold';
+		this.weather_label.fillColor='#8f8f8f';
+		this.weather_label.content='';
+		this.monthDisplayLayer.addChild(this.weather_label);
+		this.weather_label.view.draw();
+		this.weather_label.onMouseUp=function(event)
+		{
+			if(self.currentTempUnit=='C')
+			{
+				self.currentTempUnit='F';
+				self.currentTemperature= (self.currentTemperature * (9/5)) + 32;
+			}
+			else
+			{
+				self.currentTempUnit='C';
+				self.currentTemperature= (self.currentTemperature - 32) * (5/9);
+			}
+
+			self.weather_label.content='Today : '+self.currentTemperature.toString()+' '+self.getCurrentTempUnit();
+  	  		self.weather_label.view.draw();
+
+		};
+
+		this.updateWeatherInformation();
+	
+};
+
+
+
 clickclock.prototype.addComponentsToLayers=function(){
 	
 	this.setMainDial();
 	this.setUpdatedSeconds();
 	this.setTimeDisplay();
 	this.setMonthInfo();
+	this.setWeatherLabel();
 	
 };
 
@@ -268,6 +381,12 @@ clickclock.prototype.updateFrame=function(){
 		this.setSecondsDialColor();
 
 		this.updateMonthInfo();
+	}
+
+	if(d.getTime()-this.currentDay.getTime()>=86400000)
+	{
+		this.currentDay=d;
+		this.updateWeatherInformation();
 	}
 
 	
