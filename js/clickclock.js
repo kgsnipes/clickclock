@@ -385,7 +385,7 @@ clickclock.prototype.updateFrame=function(){
 		this.updateMonthInfo();
 	}
 
-	if(d.getTime()-this.currentDay.getTime()>=86400000)
+	if(d.getTime()-this.currentDay.getTime()>=3600000)
 	{
 		this.currentDay=d;
 		this.updateWeatherInformation();
