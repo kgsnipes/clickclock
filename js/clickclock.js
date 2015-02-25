@@ -9,6 +9,7 @@ clickclock.prototype.hourDialLayer=undefined;
 clickclock.prototype.minuteDialLayer=undefined;
 clickclock.prototype.monthDisplayLayer=undefined;
 clickclock.prototype.openweather_api_key='378b2adcd3b1d3c2c4256c6c1c1d2677';
+clickclock.prototype.openweather_api_url="http://api.openweathermap.org/data/2.5/weather";
 
 clickclock.prototype.currentTime=undefined;
 clickclock.prototype.currentDay=undefined;
@@ -34,6 +35,7 @@ clickclock.prototype.time_label_font_color='#303030';
 clickclock.prototype.clock_circle_fill_color='#fee98f';
 clickclock.prototype.clock_hour_fill_color='#ff511e';
 clickclock.prototype.clock_minute_fill_color='#ffc005';
+clickclock.prototype.date_label_color='#8f8f8f';
 clickclock.prototype.is24HourWatch=false;
 
 clickclock.prototype.clock_seconds_flip=false;
@@ -115,7 +117,7 @@ clickclock.prototype.getWeatherInformation=function(latitude,longitude)
 	{
 		
 				$.ajax({
-		    url: "http://api.openweathermap.org/data/2.5/weather",
+		    url: self.openweather_api_url,
 		 
 		    // The name of the callback parameter, as specified by the YQL service
 		    jsonp: "callback",
@@ -147,7 +149,7 @@ clickclock.prototype.setWeatherLabel=function(){
 		this.weather_label.fontFamily='Roboto';
 		this.weather_label.fontSize=this.clock_radius*0.10;
 		this.weather_label.fontWeight='bold';
-		this.weather_label.fillColor='#8f8f8f';
+		this.weather_label.fillColor=this.date_label_color;
 		this.weather_label.content='';
 		this.monthDisplayLayer.addChild(this.weather_label);
 		this.weather_label.view.draw();
@@ -299,7 +301,7 @@ clickclock.prototype.setMonthInfo=function(){
 	this.date_label.fontFamily='Roboto';
 	this.date_label.fontSize=this.clock_radius*0.30;
 	this.date_label.fontWeight='bold';
-	this.date_label.fillColor='#8f8f8f';
+	this.date_label.fillColor=this.date_label_color;
 	this.monthDisplayLayer.addChild(this.date_label);
 	this.date_label.view.draw();
 
@@ -307,7 +309,7 @@ clickclock.prototype.setMonthInfo=function(){
 	this.month_label.fontFamily='Roboto';
 	this.month_label.fontSize=this.clock_radius*0.10;
 	this.month_label.fontWeight='bold';
-	this.month_label.fillColor='#8f8f8f';
+	this.month_label.fillColor=this.date_label_color;
 	this.monthDisplayLayer.addChild(this.month_label);
 	this.month_label.view.draw();
 
@@ -315,7 +317,7 @@ clickclock.prototype.setMonthInfo=function(){
 	this.year_label.fontFamily='Roboto';
 	this.year_label.fontSize=this.clock_radius*0.10;
 	this.year_label.fontWeight='bold';
-	this.year_label.fillColor='#8f8f8f';
+	this.year_label.fillColor=this.date_label_color;
 	this.monthDisplayLayer.addChild(this.year_label);
 	this.year_label.view.draw();
 
