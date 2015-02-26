@@ -97,8 +97,8 @@ clickclock.prototype.setUpdatedWeather=function(weather)
    
    if(weather!=undefined && weather.main!=undefined && weather.main.temp!=undefined)
    {
-   	  this.currentTemperature=weather.main.temp.toFixed(2);
-   	  this.weather_label.content='Today : '+this.currentTemperature.toString()+' '+this.getCurrentTempUnit();
+   	  this.currentTemperature=weather.main.temp;
+   	  this.weather_label.content='Today : '+this.currentTemperature.toFixed(2).toString()+' '+this.getCurrentTempUnit();
   	  this.weather_label.view.draw();
    }
   
@@ -166,7 +166,7 @@ clickclock.prototype.setWeatherLabel=function(){
 				self.currentTemperature= (self.currentTemperature - 32) * (5/9);
 			}
 
-			self.weather_label.content='Today : '+self.currentTemperature.toString()+' '+self.getCurrentTempUnit();
+			self.weather_label.content='Today : '+self.currentTemperature.toFixed(2).toString()+' '+self.getCurrentTempUnit();
   	  		self.weather_label.view.draw();
 
 		};
