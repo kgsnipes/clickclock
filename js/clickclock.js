@@ -330,7 +330,7 @@ clickclock.prototype.setMonthInfo=function(){
 
 clickclock.prototype.updateMonthInfo=function(){
 
-	this.date_label.content=new Date().getDate();
+	this.date_label.content=(new Date().getDate()<10)?'0'+new Date().getDate():new Date().getDate();
 	this.month_label.content=this.months[new Date().getMonth()];
 	this.year_label.content=new Date().getFullYear().toString();
 	
